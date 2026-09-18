@@ -35,6 +35,8 @@ load_dotenv()
 app = Flask(__name__)
 # Enable CORS for frontend requests
 CORS(app, resources={r"/api/*": {"origins": "*"}})
+# Set max HTTP body upload payload limit to 16MB
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 def format_error_message(err):
     """

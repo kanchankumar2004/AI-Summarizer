@@ -202,6 +202,22 @@ function App() {
     }
   };
 
+  // File Selection & Validation (15MB Limit for Cloud Uploads)
+  const processFileSelection = (selectedFile) => {
+    if (!selectedFile) return;
+    if (!selectedFile.name.toLowerCase().endsWith('.pdf') && selectedFile.type !== 'application/pdf') {
+      setError("Please upload a valid PDF document.");
+      return;
+    }
+    const sizeMB = selectedFile.size / (1024 * 1024);
+    if (sizeMB > 15) {
+      setError(`File size (${sizeMB.toFixed(1)} MB) exceeds the 15 MB limit for web uploads. Please upload a PDF under 15 MB.`);
+      return;
+    }
+    setFile(selectedFile);
+    setError(null);
+  };
+
   // Drag and drop handlers
   const handleDragOver = (e) => { e.preventDefault(); setDragActive(true); };
   const handleDragLeave = (e) => { e.preventDefault(); setDragActive(false); };
@@ -209,13 +225,7 @@ function App() {
     e.preventDefault();
     setDragActive(false);
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const droppedFile = e.dataTransfer.files[0];
-      if (droppedFile.type === 'application/pdf' || droppedFile.name.endsWith('.pdf')) {
-        setFile(droppedFile);
-        setError(null);
-      } else {
-        setError("Please upload a valid PDF document.");
-      }
+      processFileSelection(e.dataTransfer.files[0]);
     }
   };
 
@@ -374,13 +384,13 @@ However, alongside these powerful benefits come challenges regarding data privac
                       type="file"
                       accept=".pdf"
                       style={{ display: 'none' }}
-                      onChange={(e) => e.target.files[0] && setFile(e.target.files[0])}
+                      onChange={(e) => e.target.files[0] && processFileSelection(e.target.files[0])}
                     />
                     <div className="dropzone-icon-circle">
                       <UploadCloud size={28} />
                     </div>
                     <div className="dropzone-main-text">Click to upload or drag & drop PDF document</div>
-                    <div className="dropzone-sub-text">Supports PDF files up to 50MB</div>
+                    <div className="dropzone-sub-text">Supports PDF documents up to 15MB</div>
                   </div>
                 ) : (
                   <div className="file-preview-card">
