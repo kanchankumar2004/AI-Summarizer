@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+  --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Luxury Black & White Monochrome Palette */
+  --bg-dark: #000000;
+  --bg-card: rgba(15, 15, 15, 0.85);
+  --bg-card-hover: rgba(25, 25, 25, 0.9);
+  --bg-input: rgba(10, 10, 10, 0.95);
+
+  --border-color: rgba(255, 255, 255, 0.12);
+  --border-light: rgba(255, 255, 255, 0.25);
+  --border-glow: rgba(255, 255, 255, 0.4);
+
+  --primary: #ffffff;
+  --primary-hover: #e5e5e5;
+  --primary-dark: #000000;
+
+  --accent-white: #ffffff;
+  --accent-silver: #d4d4d4;
+  --accent-gray: #737373;
+
+  --text-main: #ffffff;
+  --text-sub: #e5e5e5;
+  --text-muted: #a3a3a3;
+
+  --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.9);
+  --shadow-glow: 0 0 35px rgba(255, 255, 255, 0.15);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-image:
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.08) 0%, transparent 60%),
+    radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.03) 0%, transparent 50%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Black & White Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+}
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
