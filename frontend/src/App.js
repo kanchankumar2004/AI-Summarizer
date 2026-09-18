@@ -202,7 +202,7 @@ function App() {
     }
   };
 
-  // File Selection & Validation (15MB Limit for Cloud Uploads)
+  // File Selection & Validation (50MB Limit)
   const processFileSelection = (selectedFile) => {
     if (!selectedFile) return;
     if (!selectedFile.name.toLowerCase().endsWith('.pdf') && selectedFile.type !== 'application/pdf') {
@@ -210,8 +210,8 @@ function App() {
       return;
     }
     const sizeMB = selectedFile.size / (1024 * 1024);
-    if (sizeMB > 15) {
-      setError(`File size (${sizeMB.toFixed(1)} MB) exceeds the 15 MB limit for web uploads. Please upload a PDF under 15 MB.`);
+    if (sizeMB > 50) {
+      setError(`File size (${sizeMB.toFixed(1)} MB) exceeds the 50 MB limit. Please upload a PDF under 50 MB.`);
       return;
     }
     setFile(selectedFile);
@@ -390,7 +390,7 @@ However, alongside these powerful benefits come challenges regarding data privac
                       <UploadCloud size={28} />
                     </div>
                     <div className="dropzone-main-text">Click to upload or drag & drop PDF document</div>
-                    <div className="dropzone-sub-text">Supports PDF documents up to 15MB</div>
+                    <div className="dropzone-sub-text">Supports PDF documents up to 50MB</div>
                   </div>
                 ) : (
                   <div className="file-preview-card">
