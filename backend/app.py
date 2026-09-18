@@ -201,32 +201,40 @@ def extract_youtube_id(url_or_id):
 
 def fetch_youtube_transcript(video_id):
     """
-    Fetch YouTube transcript using youtube-transcript-api across versions.
+    Fetch YouTube transcript using youtube-transcript-api across versions (supporting auto-generated captions).
     """
-    try:
-        ytt = YouTubeTranscriptApi()
-        if hasattr(ytt, 'fetch'):
-            snippets = ytt.fetch(video_id, languages=['en', 'en-US', 'hi', 'es', 'fr', 'de'])
-            full_text = " ".join([getattr(s, 'text', str(s)) for s in snippets])
-            if full_text.strip():
-                return full_text
-    except Exception:
-        pass
-
+    # 1. Try direct ytt.fetch(video_id) which grabs default/auto-generated transcript
     try:
         ytt = YouTubeTranscriptApi()
         if hasattr(ytt, 'fetch'):
             snippets = ytt.fetch(video_id)
             full_text = " ".join([getattr(s, 'text', str(s)) for s in snippets])
             if full_text.strip():
-                return full_text
+                return full_text.strip()
     except Exception:
         pass
 
+    # 2. Try ytt.list(video_id) to iterate over all available transcripts (manual or auto-translated)
+    try:
+        ytt = YouTubeTranscriptApi()
+        if hasattr(ytt, 'list'):
+            transcript_list = ytt.list(video_id)
+            for t in transcript_list:
+                try:
+                    snippets = t.fetch()
+                    full_text = " ".join([getattr(s, 'text', str(s)) if hasattr(s, 'text') else s.get('text', '') for s in snippets])
+                    if full_text.strip():
+                        return full_text.strip()
+                except Exception:
+                    continue
+    except Exception:
+        pass
+
+    # 3. Fallback for older static class methods
     if hasattr(YouTubeTranscriptApi, 'get_transcript'):
         try:
-            transcript_list = YouTubeTranscriptApi.get_transcript(video_id, languages=['en', 'en-US', 'hi', 'es', 'fr', 'de'])
-            return " ".join([entry.get('text', '') if isinstance(entry, dict) else getattr(entry, 'text', str(entry)) for entry in transcript_list])
+            transcript_list = YouTubeTranscriptApi.get_transcript(video_id)
+            return " ".join([entry.get('text', '') if isinstance(entry, dict) else getattr(entry, 'text', str(entry)) for entry in transcript_list]).strip()
         except Exception:
             pass
 
