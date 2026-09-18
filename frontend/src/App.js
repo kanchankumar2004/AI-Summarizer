@@ -47,7 +47,18 @@ const YoutubeIcon = ({ size = 18, color = "currentColor" }) => (
   </svg>
 );
 
-const API_BASE = process.env.REACT_APP_API_BASE_URL || 'https://ai-summarizer-backend-nic5.onrender.com/api';
+// Smart API Base URL detection for local vs production
+const getApiBase = () => {
+  if (process.env.REACT_APP_API_BASE_URL) {
+    return process.env.REACT_APP_API_BASE_URL;
+  }
+  if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    return 'http://127.0.0.1:5000/api';
+  }
+  return 'https://ai-summarizer-backend-nic5.onrender.com/api';
+};
+
+const API_BASE = getApiBase();
 
 function App() {
   const [mode, setMode] = useState('text');
@@ -81,7 +92,7 @@ function App() {
 
   const checkServerHealth = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/health`, { timeout: 4000 });
+      const res = await axios.get(`${API_BASE}/health`, { timeout: 15000 });
       if (res.data) {
         setServerHasKey(Boolean(res.data.has_env_api_key));
       }
@@ -132,7 +143,7 @@ function App() {
     setSummaryData(null);
 
     try {
-      const config = {};
+      const config = { timeout: 65000 };
       if (isFormData) {
         config.headers = { 'Content-Type': 'multipart/form-data' };
       }
@@ -145,7 +156,10 @@ function App() {
       }
     } catch (err) {
       console.error("Summarization error:", err);
-      const errMsg = err.response?.data?.error || err.message || "Failed to generate AI summary.";
+      let errMsg = err.response?.data?.error || err.message || "Failed to generate AI summary.";
+      if (err.message && (err.message.includes('Network Error') || err.code === 'ECONNABORTED')) {
+        errMsg = "Render server is waking up from free hosting sleep (takes ~30s). Please wait a few seconds and try again!";
+      }
       setError(errMsg);
     } finally {
       setLoading(false);
