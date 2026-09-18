@@ -47,7 +47,7 @@ const YoutubeIcon = ({ size = 18, color = "currentColor" }) => (
   </svg>
 );
 
-const API_BASE = 'http://127.0.0.1:5000/api';
+const API_BASE = process.env.REACT_APP_API_BASE_URL || 'http://127.0.0.1:5000/api';
 
 function App() {
   const [mode, setMode] = useState('text');
