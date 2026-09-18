@@ -33,8 +33,8 @@ except ImportError:
 load_dotenv()
 
 app = Flask(__name__)
-# Enable CORS for frontend requests
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+# Enable CORS for all routes and origins
+CORS(app, resources={r"/*": {"origins": "*"}})
 # Set max HTTP body upload payload limit to 55MB (supporting 50MB files)
 app.config['MAX_CONTENT_LENGTH'] = 55 * 1024 * 1024
 
@@ -233,6 +233,7 @@ def fetch_youtube_transcript(video_id):
     raise RuntimeError(f"No transcript or captions available for YouTube video (ID: {video_id}). Please ensure captions are enabled on the video.")
 
 @app.route('/api/health', methods=['GET'])
+@app.route('/health', methods=['GET'])
 def health_check():
     key = get_api_key()
     has_env_key = bool(key and len(key) > 10)
@@ -244,6 +245,7 @@ def health_check():
     })
 
 @app.route('/api/summarize/text', methods=['POST'])
+@app.route('/summarize/text', methods=['POST'])
 def summarize_text():
     try:
         data = request.get_json() or {}
@@ -273,6 +275,7 @@ def summarize_text():
         return jsonify({"error": format_error_message(e)}), 400
 
 @app.route('/api/summarize/pdf', methods=['POST'])
+@app.route('/summarize/pdf', methods=['POST'])
 def summarize_pdf():
     try:
         if 'file' not in request.files:
@@ -320,6 +323,7 @@ def summarize_pdf():
         return jsonify({"error": format_error_message(e)}), 400
 
 @app.route('/api/summarize/youtube', methods=['POST'])
+@app.route('/summarize/youtube', methods=['POST'])
 def summarize_youtube():
     try:
         data = request.get_json() or {}
@@ -362,6 +366,7 @@ def summarize_youtube():
         return jsonify({"error": format_error_message(e)}), 400
 
 @app.route('/api/summarize/website', methods=['POST'])
+@app.route('/summarize/website', methods=['POST'])
 def summarize_website():
     try:
         data = request.get_json() or {}

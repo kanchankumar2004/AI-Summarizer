@@ -49,13 +49,18 @@ const YoutubeIcon = ({ size = 18, color = "currentColor" }) => (
 
 // Smart API Base URL detection for local vs production
 const getApiBase = () => {
-  if (process.env.REACT_APP_API_BASE_URL) {
-    return process.env.REACT_APP_API_BASE_URL;
+  let url = process.env.REACT_APP_API_BASE_URL;
+  if (!url) {
+    if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+      return 'http://127.0.0.1:5000/api';
+    }
+    url = 'https://ai-summarizer-backend-nic5.onrender.com/api';
   }
-  if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
-    return 'http://127.0.0.1:5000/api';
+  url = url.trim().replace(/\/+$/, '');
+  if (!url.endsWith('/api')) {
+    url += '/api';
   }
-  return 'https://ai-summarizer-backend-nic5.onrender.com/api';
+  return url;
 };
 
 const API_BASE = getApiBase();
